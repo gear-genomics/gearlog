@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>gearlog: usage of gear tools | GEAR</title>
+  <meta name="description" content="statistics of gear usage.">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.6/css/all.css">
+  <link rel="stylesheet" href="static/css/gear.css">
+  <link rel="stylesheet" href="static/css/gearlog.css">
+</head>
+
+<body onload="prepareButtons();">
+
+  <header class="px-0 py-4">
+    <div class="container">
+      <h1 class="display-4 app-name">gearlog</h1>
+        <p class="lead">Usage of gear tools.</p>
+        <!--<a class="plain" href="" target="_blank">
+          <i class="fas fa-book"></i> Docs
+        </a>
+        ·-->
+        <a class="plain" href="https://www-db.embl.de/EMBLPersonGroup-PersonPicture/MailForm/?recipient=ggenomics" target="_blank">
+          <i class="fas fa-question"></i> Get help
+        </a>
+        ·
+        <a class="plain" target="_blank" href="https://github.com/gear-genomics/gearlog">
+          <i class="fab fa-github-alt"></i> Source
+        </a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="primKeySel">
+      <input class="span2" id="primKey" name="primKey" type="hidden" value="Gear Main">
+      <div class="alert alert-primary mb-2" role="alert">
+        Select tool and time:
+        <br />
+        <p></p>
+        <div class="dropdown">
+        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="btn-primKey" name="btn-primKey">
+          Gear Main
+        </button>
+        <div class="dropdown-menu" id="btn-key-list" name="btn-key-list">
+          <a class="dropdown-item" href="#">Tools not loaded!</a>
+        </div>
+        &nbsp;&nbsp;&nbsp;From:&nbsp;
+        <input type="date" id="dateStart">
+	&nbsp;&nbsp;&nbsp;To:&nbsp;
+        <input type="date" id="dateEnd">
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="submit" class="btn btn-outline-primary" id="btn-submit">
+          <i class="fas fa-rocket" style="margin-right: 5px;"></i>
+          Launch Analysis
+        </button>
+      </div>
+    </div>
+
+    <ul class="nav nav-fill mb-2" id="mainTab">
+      <li class="nav-item">
+        <a class="nav-link active" href="#usage-tab">Usage</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#country-tab">Country</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#help-tab" id="link-help">Help</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="main-tabs">
+      <div class="tab-pane show active" id="usage-tab">
+        <div id="spinner1"></div>
+        <div id="usage"></div>
+      </div>
+
+      <div class="tab-pane" id="country-tab">
+        <div id="spinner2"></div>
+        <div id="country"></div>
+	<br /><br />
+        <p>This product includes GeoLite2 data created by MaxMind, available from
+          <a href="http://www.maxmind.com">http://www.maxmind.com</a>.
+        </p>
+      </div>
+
+      <div class="tab-pane" id="help-tab">
+        <p>Gearlog is a tool to track the usage of the gear tools. Just
+	   select a timespan and a tool.<br />
+           <br /><br />
+           This product includes GeoLite2 data created by MaxMind, 
+           available from
+           <a href="http://www.maxmind.com">http://www.maxmind.com</a>.
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="float-left">
+        <a class="plain" target="_blank" href="https://gear.embl.de">
+          GEAR ~
+          <i class="fas fa-home"></i>
+        </a>
+        ·
+        <a class="plain" target="_blank" href="https://github.com/gear-genomics">
+          <i class="fab fa-github-alt"></i>
+        </a>
+        ·
+        <a class="plain" target="_blank" href="https://gear.embl.de/terms">
+          Terms of Use
+        </a>
+        ·
+        <a class="plain" target="_blank" href="https://gear.embl.de/contact">
+          Contact Us
+        </a>
+      </div>
+      <div class="float-right">
+        Hosted with
+        <i class="fas fa-heart embl-red"></i> by
+        <a class="plain" target="_blank" href="https://www.embl.de/">
+          <img class="footer-logo" alt="EMBL logo" src="static/img/embl.svg">
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+  <script src="static/js/gearlog.js"></script>
+
+</body>
+
+</html>
