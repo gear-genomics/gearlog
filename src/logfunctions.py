@@ -33,12 +33,7 @@ def convLogFormat(line,geodb):
             for trls in setti.TRACKLIST:
                 if (key == trls[2]) or ((key.endswith('/') == True) and (key.rstrip('/') == trls[2]) and len(key) > 1) or ((trls[2].endswith('*') == True) and (key.startswith(trls[2].rstrip('*')) == True)):
                     intIP = i2i.ip2integer(da.group('ipaddress'))
-                    country = "--,Unknown Country,"
-                    # Worst way to find country
-                    for bla in geodb:
-                        if bla[0] <= intIP and bla[1] >= intIP:
-                            country = bla[2] + "," + bla[3].rstrip() + ","
-                            break
+                    country = binSearchIP(geodb, intIP)
                     datetime_object = datetime.strptime(da.group('dateandtime')[:-6], '%d/%b/%Y:%H:%M:%S') # with py3 + %z')
                     ret += datetime_object.strftime('%Y.%m.%d,%H:%M:%S,') + '"' + trls[0] + '","' + trls[1] + '",'
                     ret += country + 'useragent="' + da.group('useragent') + '"'
@@ -47,6 +42,29 @@ def convLogFormat(line,geodb):
     else:
         err = 1
     return {"err": err,"conv": ret}
+
+def binSearchIP(geodb, ip):
+    first = 0
+    last = len(geodb)-1
+
+    while first<=last:
+        midpoint = (first + last)//2
+        # Found:
+        if geodb[midpoint][0] <= ip and geodb[midpoint][1] >= ip:
+            return geodb[midpoint][2] + "," + geodb[midpoint][3].rstrip() + ","
+        elif geodb[midpoint][0] > ip:
+            last = midpoint-1
+            # catch gap
+            if geodb[last][1] < ip:
+                return "--,Unknown Country,"
+        else:
+            first = midpoint+1
+            # catch gap
+            if geodb[first][0] > ip:
+                return "--,Unknown Country,"
+    return "--,Unknown Country,"
+
+
 
 
 def cronLog2perm(logdir, filebase, workdir, geoloc):
