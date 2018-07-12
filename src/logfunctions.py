@@ -9,7 +9,7 @@ from datetime import datetime
 import ip2integer as i2i
 import settings as setti
 
-lineformat = re.compile(r"""(?P<ipaddress>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - (?P<remoteuser>[^ ]+) \[(?P<dateandtime>\d{2}\/[a-z]{3}\/\d{4}:\d{2}:\d{2}:\d{2} (\+|\-)\d{4})\] (\"(?P<requesttype>[a-z]+ )(?P<url>.+) (?P<protocol>http\/\d\.\d")) (?P<statuscode>\d{3}) (?P<bytessent>\d+) (["](?P<refferer>[^"]+)["]) (["](?P<useragent>[^"]+)["])(?P<rest>.*)""", re.IGNORECASE)
+lineformat = re.compile(r"""(?P<ipaddress>[0-9A-Fa-f.:]+) - (?P<remoteuser>[^ ]+) \[(?P<dateandtime>\d{2}\/[a-z]{3}\/\d{4}:\d{2}:\d{2}:\d{2} (\+|\-)\d{4})\] (\"(?P<requesttype>[a-z]+ )(?P<url>.+) (?P<protocol>http\/\d\.\d")) (?P<statuscode>\d{3}) (?P<bytessent>\d+) (["](?P<refferer>[^"]+)["]) (["](?P<useragent>[^"]+)["])(?P<rest>.*)""", re.IGNORECASE)
 
 def hashFileSHA256(fileName):
     sha256 = hashlib.sha256()
@@ -19,7 +19,7 @@ def hashFileSHA256(fileName):
         return str(sha256.hexdigest())
     return "Error: Could not hash file: " + fileName
 
-def convLogFormat(line,geodb):
+def convLogFormat(line,geodbv4, geodbv6):
     ret = ""
     da = re.search(lineformat, line)
     if da and da.group('statuscode') == "200":
@@ -32,8 +32,12 @@ def convLogFormat(line,geodb):
         if found == 0:
             for trls in setti.TRACKLIST:
                 if (key == trls[2]) or ((key.endswith('/') == True) and (key.rstrip('/') == trls[2]) and len(key) > 1) or ((trls[2].endswith('*') == True) and (key.startswith(trls[2].rstrip('*')) == True)):
-                    intIP = i2i.ip2integer(da.group('ipaddress'))
-                    country = binSearchIP(geodb, intIP)
+                    ip = da.group('ipaddress')
+                    intIP = i2i.ip2integer(ip)
+                    if '.' in ip: # IPv4
+                        country = binSearchIP(geodbv4, intIP)
+                    else: #IPv6
+                        country = binSearchIP(geodbv6, intIP)
                     datetime_object = datetime.strptime(da.group('dateandtime')[:-6], '%d/%b/%Y:%H:%M:%S') # with py3 + %z')
                     ret += datetime_object.strftime('%Y.%m.%d,%H:%M:%S,') + '"' + trls[0] + '","' + trls[1] + '",'
                     ret += country + 'useragent="' + da.group('useragent') + '"'
@@ -64,25 +68,33 @@ def binSearchIP(geodb, ip):
                 return "--,Unknown Country,"
     return "--,Unknown Country,"
 
-
-
-
-def cronLog2perm(logdir, filebase, workdir, geoloc):
+def cronLog2perm(logdir, filebase, workdir, geolocv4, geolocv6):
     zipFiles = []
     loadZip = []
     oldFiles = {}
     knownFiles = {}
     logList = []
-    geodb = []
-    with open(geoloc, "r") as geofile: 
-        print "Load Geodata"
+    geodbv4 = []
+    geodbv6 = []
+    with open(geolocv4, "r") as geofile: 
+        print "Load Geodata IPv4"
         last = -1
         for lin in geofile.readlines():
             start,end,cid,cnam = lin.split(",")
             if int(start) > int(end) or int(start) < last:
                 print "Error in geoDB: ", start, " - ", end
             last = int(end)
-            geodb.append([int(start),int(end),cid,cnam])
+            geodbv4.append([int(start),int(end),cid,cnam])
+
+    with open(geolocv6, "r") as geofile:
+        print "Load Geodata IPv6"
+        last = -1
+        for lin in geofile.readlines():
+            start,end,cid,cnam = lin.split(",")
+            if int(start) > int(end) or int(start) < last:
+                print "Error in geoDB: ", start, " - ", end
+            last = int(end)
+            geodbv6.append([int(start),int(end),cid,cnam])
 
     for f in os.listdir(logdir):
         if f.startswith(filebase):
@@ -113,7 +125,7 @@ def cronLog2perm(logdir, filebase, workdir, geoloc):
     for f in loadZip:
         logfile = gzip.open(f)
         for l in logfile.readlines():
-            rData = convLogFormat(l,geodb)
+            rData = convLogFormat(l,geodbv4,geodbv6)
             if rData["err"] == 0:
               #  print rData["conv"]
                 logList.append(rData["conv"])
@@ -141,7 +153,6 @@ def add2permalog(ppath, logList):
         for lin3 in srData:
             pfile.write(lin3 + "\n")
         pfile.close()
-        print key, val[0]
 
 
 def log2dic(logdir, filebase):
@@ -155,7 +166,7 @@ def log2dic(logdir, filebase):
             else:
                 logfile = open(os.path.join(logdir, f))
 
-            for l in logfile.readlines():
+            for l in logfile.readlines(): 
                 da = re.search(lineformat, l)
                 if da:
                     logList.append([da.group('dateandtime'), da.group('url'), da.group('requesttype'), da.group('statuscode'), da.group('ipaddress'), da.group('useragent')])

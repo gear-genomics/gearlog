@@ -46,7 +46,7 @@ def getDatabase():
             else:
                 locDic[lLis[0]] = lLis[4] + "," + lLis[5]
 
-        with open(os.path.join(GEODBD, "geodb.txt"), "w") as geodb:
+        with open(os.path.join(GEODBD, "geodb_IPv4.txt"), "w") as geodb:
             with open(os.path.join(GEOLIT, prefolder[0], IP4FILE), "r") as ip4file:
                 ip4all = ip4file.readlines()
                 ip4all.pop(0) # Away the header
@@ -59,7 +59,21 @@ def getDatabase():
                         geodb.write(str(netWork[1]) + "," + str(netWork[2]) + "," + locDic[lLis[2]] + "\n")
                     else:
                         geodb.write(str(netWork[1]) + "," + str(netWork[2]) + ",--,Unknown Country\n" )
-                print "Done."
+                print "Done IPv4."
+        with open(os.path.join(GEODBD, "geodb_IPv6.txt"), "w") as geodb:
+            with open(os.path.join(GEOLIT, prefolder[0], IP6FILE), "r") as ip6file:
+                ip6all = ip6file.readlines()
+                ip6all.pop(0) # Away the header
+                for lin in ip6all:
+                    lLis = lin.split(',')
+                    netWork = i2i.calcMask(lLis[0])
+                    if lLis[1] in locDic:
+                        geodb.write(str(netWork[1]) + "," + str(netWork[2]) + "," + locDic[lLis[1]] + "\n")
+                    elif lLis[2] in locDic:
+                        geodb.write(str(netWork[1]) + "," + str(netWork[2]) + "," + locDic[lLis[2]] + "\n")
+                    else:
+                        geodb.write(str(netWork[1]) + "," + str(netWork[2]) + ",--,Unknown Country\n" )
+                print "Done IPv6."
 
 
 if __name__ == "__main__":
