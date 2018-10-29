@@ -18,16 +18,21 @@ Installing
 Setup
 -----
 Install the Geolite2 database from MaxMind, available from http://www.maxmind.com:
+
 `./src/update_GeoLite2.py`
 
 Analyze log files:
+
 `./src/create_report.py`
+
 Results end up in the folder /log_report
 
 Adapt the monitored pages in:
+
 `vim src/settings.py`
 
 Run the script after logrotate or as cronjob:
+
 `./src/cron_log_update.py`
 
 
