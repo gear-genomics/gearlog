@@ -12,10 +12,14 @@ from subprocess import call
 from flask import Flask, send_file, flash, send_from_directory, request, redirect, url_for, jsonify
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
+import sys
+
+GLOGWS = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(GLOGWS,'../src'))
+import settings as setti
 
 app = Flask(__name__)
 CORS(app)
-GLOGWS = os.path.dirname(os.path.abspath(__file__))
 
 app.config['GEARLOG'] = os.path.join(GLOGWS, "..")
 app.config['BASEURL'] = '/gearlog'
@@ -25,7 +29,6 @@ app.static_folder = app.static_url_path = os.path.join(GLOGWS, "../client/static
 def generate():
     fList = [] # Files to read
     data = [] # All relevant data
-    keyDic = {} # The primary keys from data
     keyList = [] # The primary keys in a list
     secDic = {} # The secondary keys from data pointing to array position
     secList = [] # The List of the secondary keys in correct order
@@ -46,6 +49,20 @@ def generate():
     if datetime.strptime(dateEnd, "%Y-%m-%d") < datetime.strptime(dateStart, "%Y-%m-%d"):
         return jsonify(errors = [{"title": "Error: Start time later as end time."}]), 400
     spanDays = abs((datetime.strptime(dateEnd, "%Y-%m-%d") - datetime.strptime(dateStart, "%Y-%m-%d")).days)
+
+    # Get the List of Primary Keys and Secondary Keys:
+    lastPrimKey = ""
+    secList.append("Date")
+    k = 0; # 0 is the date
+    for key in setti.TRACKLIST:
+        if lastPrimKey != key[0]:
+            lastPrimKey = key[0]
+            keyList.append(key[0])
+        if primKey == key[0]:
+            k += 1
+            secList.append(key[1])
+            secDic['"' + key[1] + '"'] = k
+    resData.append(secList)
 
     # Only load data of relevance into data dic
     monthStart = dateStart[:-3]
@@ -75,26 +92,10 @@ def generate():
             logfile = gzip.open(endFile)
             for l in logfile.readlines():
                 linArr = l.split(',')
-                keyDic[linArr[2]] = 1
                 lTime = datetime.strptime(linArr[0], "%Y.%m.%d")
                 if linArr[2] == '"' + primKey + '"' and cptStart < lTime and cptEnd > lTime:
                     data.append(l)
             logfile.close()
-    for key,val in keyDic.items():
-        keyList.append(key.strip('"'))
-
-    # Process the data
-    ## Collect secondary keys
-    for l in data:
-        linArr = l.split(',')
-        secDic[linArr[3]] = 1
-    k = 0; # 0 is the date
-    secList.append("Date")
-    for key,val in secDic.items():
-        k += 1
-        secList.append(key)
-        secDic[key] = k
-    resData.append(secList)
 
     ## Get a List of the dates 
     if spanDays < 100:

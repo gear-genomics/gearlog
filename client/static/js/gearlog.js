@@ -23,6 +23,8 @@ function prepareButtons() {
 
     var submitButton = document.getElementById('btn-submit');
     submitButton.addEventListener('click', submit);
+    var selButton = document.getElementById('btn-key-list');
+    selButton.addEventListener('click', submit);
     submit();
 }
 
@@ -53,9 +55,6 @@ function submit () {
 
 function doSubmit (data) {
     var loca = 'http://0.0.0.0:3300';
-    if (location.origin.startsWith("http")) {
-        loca = location.origin;
-    }
     var req = new XMLHttpRequest();
     req.addEventListener('load', displayResults);
     req.open('POST', loca + '/api/v1/upload', true);
@@ -108,7 +107,6 @@ function displayData(data) {
 }
 
 function displayError(data) {
-    alert(data)
     var res = JSON.parse(data)
     for (var i = 0; i < res["errors"].length; i++) {
 	document.getElementById('usage').innerHTML = '<br /><div class="error">' + res["errors"][i]['title'] + '</div><br />'

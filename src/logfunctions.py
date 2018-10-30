@@ -11,6 +11,8 @@ import settings as setti
 
 lineformat = re.compile(r"""(?P<ipaddress>[0-9A-Fa-f.:]+) - (?P<remoteuser>[^ ]+) \[(?P<dateandtime>\d{2}\/[a-z]{3}\/\d{4}:\d{2}:\d{2}:\d{2} (\+|\-)\d{4})\] (\"(?P<requesttype>[a-z]+ )(?P<url>.+) (?P<protocol>http\/\d\.\d")) (?P<statuscode>\d{3}) (?P<bytessent>\d+) (["](?P<refferer>[^"]+)["]) (["](?P<useragent>[^"]+)["])(?P<rest>.*)""", re.IGNORECASE)
 
+p3pformat = re.compile(r"""(?P<ipaddress>[0-9A-Fa-f.:]+) - \[(?P<dateandtime>\d{2}\/[a-z]{3}\/\d{4}:\d{2}:\d{2}:\d{2} (\+|\-)\d{4})\] "(?P<primKey>[^"]+)" "(?P<secKey>[^"]+)" (?P<primerCount>\d+) (?P<uuid>[^ ]+) (["](?P<useragent>[^"]+)["])(?P<rest>.*)""", re.IGNORECASE)
+
 def hashFileSHA256(fileName):
     sha256 = hashlib.sha256()
     with open(fileName,"rb") as hFile:
