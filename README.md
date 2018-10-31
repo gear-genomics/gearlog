@@ -1,5 +1,5 @@
-# gearlog
-Usage of gear tools.
+# Gearlog
+Gearlog monitors the usage of gear tools.
 
 In short, gearlog translates the server log files into permalog files 
 stripped of ip addresses. The access is translated into a primary and 
@@ -8,15 +8,17 @@ used for a geo-lookup.
 
 No personal data is stored in the permalogs.
 
-Installing
-----------
+Installing a local copy for testing
+-----------------------------------
 
 `git clone https://github.com/gear-genomics/gearlog.git`
 
 `cd gearlog`
 
-Setup
------
+
+Setup the scripts and cronjob
+-----------------------------
+
 Set the path to the log folders with environment variables:
 
 Path to the server logs:
@@ -46,21 +48,50 @@ Run the script after logrotate or as cronjob:
 `./src/cron_log_update.py`
 
 
-Install Web Interface
----------------------
+Setup and run the server
+------------------------
+
+The server runs in a terminal.
+
+Install the dependencies:
 
 `sudo apt install python python-pip`
 
 `pip install flask flask_cors`
 
+Start the server:
 
-Running local
--------------
+Path to the server logs:
+
+`export GEARLOG_SERVER_LOG_PATH=/PATH_TO_NGINX_OR_APACHE_LOG`
+
+Path to the Primer3Plus logs (only if present):
+
+`export GEARLOG_P3P_LOG_PATH=/PATH_TO_PRIMER3PLUS_LOG`
+
+`cd PATH_TO_GEARLOG/gearlog`
 
 `python server/server.py`
 
-Open in Browser:
 
-`client/index.html`
+Setup and run the client
+------------------------
+
+The client requires a different terminal
+
+Install the dependencies:
+
+`cd PATH_TO_GEARLOG/gearlog/client`
+
+`sudo apt install npm`
+
+`npm install`
+
+Start the client:
+
+`cd PATH_TO_GEARLOG/gearlog/client`
+
+`npm run dev`
+
 
 

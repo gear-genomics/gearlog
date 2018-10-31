@@ -1,4 +1,5 @@
-/* global XMLHttpRequest */
+const API_URL = process.env.API_URL
+
 var toolsel = document.getElementById('btn-key-list')
 var spin1 = document.getElementById('spinner1')
 var spin2 = document.getElementById('spinner2')
@@ -12,7 +13,7 @@ var spinnerHtml = '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>'
 var sectionResults = document.getElementById('results')
 var resHelp = -1;
 
-function prepareButtons() {
+document.addEventListener("DOMContentLoaded", function() {
     var today = new Date();
     var last = new Date();
     last.setDate(today.getDate()-99);
@@ -26,7 +27,7 @@ function prepareButtons() {
     var selButton = document.getElementById('btn-key-list');
     selButton.addEventListener('click', submit);
     submit();
-}
+});
 
 function date2string(date) {
     var dd = date.getDate();
@@ -57,7 +58,7 @@ function doSubmit (data) {
     var loca = 'http://0.0.0.0:3300';
     var req = new XMLHttpRequest();
     req.addEventListener('load', displayResults);
-    req.open('POST', loca + '/api/v1/upload', true);
+    req.open('POST', `${API_URL}/upload`, true);
     req.send(data);
     spin1.innerHTML = spinnerHtml;
     spin2.innerHTML = spinnerHtml;
@@ -113,6 +114,7 @@ function displayError(data) {
     }
 }
 
+window.bgiUp = bgiUp;
 function bgiUp(tKey) {
     document.getElementById('primKey').value = tKey;
     document.getElementById('btn-primKey').innerHTML = tKey;
