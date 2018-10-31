@@ -1,15 +1,15 @@
 #!/usr/bin/env python
+import os
 
 # Directory of the log files
-LOGDIR  = "/home/uni/embl/gearlog/bla_log"
-# LOGDIR  = "/var/log/nginx" # for Nginx server
+LOGDIR  = os.environ.get('GEARLOG_SERVER_LOG_PATH', '/var/log/nginx')
 
 # Base name of the log files
 # LOGBASE = "mingear"
 LOGBASE = "access" # for Nginx server
 
 # Directory of Primer3Plus log files, "" for no P3P log files
-P3PLDIR = "/home/uni/embl/gearlog/p3p_log"
+P3PLDIR = os.environ.get('GEARLOG_P3P_LOG_PATH', '') 
 
 # File endings to ignore
 IGNTYPE = [".jpg", ".png", ".svg", ".ico",

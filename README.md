@@ -17,6 +17,16 @@ Installing
 
 Setup
 -----
+Set the path to the log folders with environment variables:
+
+Path to the server logs:
+
+`export GEARLOG_SERVER_LOG_PATH=/PATH_TO_NGINX_OR_APACHE_LOG`
+
+Path to the Primer3Plus logs (only if present):
+
+`export GEARLOG_P3P_LOG_PATH=/PATH_TO_PRIMER3PLUS_LOG`
+
 Install the Geolite2 database from MaxMind, available from http://www.maxmind.com:
 
 `./src/update_GeoLite2.py`
