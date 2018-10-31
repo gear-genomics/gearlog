@@ -49,6 +49,28 @@ def convLogFormat(line,geodbv4, geodbv6):
         err = 1
     return {"err": err,"conv": ret}
 
+def convP3PFormat(line,geodbv4, geodbv6):
+    ret = ""
+    da = re.search(p3pformat, line)
+    if da:
+        ip = da.group('ipaddress')
+        intIP = i2i.ip2integer(ip)
+        if '.' in ip: # IPv4
+            country = binSearchIP(geodbv4, intIP)
+        else: #IPv6
+            country = binSearchIP(geodbv6, intIP)
+        secKey = "Pick Fail"
+        if da.group('secKey') == "Primer3_Pick_Success":
+            secKey = "Pick Success"
+        datetime_object = datetime.strptime(da.group('dateandtime')[:-6], '%d/%b/%Y:%H:%M:%S') # with py3 + %z')
+        ret += datetime_object.strftime('%Y.%m.%d,%H:%M:%S,') + '"Primer3Plus I","' + secKey + '",'
+        ret += country + 'useragent="' + da.group('useragent') + '"'
+    if len(ret) > 10:
+        err = 0
+    else:
+        err = 1
+    return {"err": err,"conv": ret}
+
 def binSearchIP(geodb, ip):
     first = 0
     last = len(geodb)-1
@@ -70,9 +92,11 @@ def binSearchIP(geodb, ip):
                 return "--,Unknown Country,"
     return "--,Unknown Country,"
 
-def cronLog2perm(logdir, filebase, workdir, geolocv4, geolocv6):
+def cronLog2perm(logdir, p3pdir, filebase, workdir, geolocv4, geolocv6):
     zipFiles = []
+    p3pFiles = []
     loadZip = []
+    loadP3P = []
     oldFiles = {}
     knownFiles = {}
     logList = []
@@ -102,6 +126,12 @@ def cronLog2perm(logdir, filebase, workdir, geolocv4, geolocv6):
         if f.startswith(filebase):
             if f.endswith(".gz"):
                 zipFiles.append(os.path.join(logdir, f))
+    if p3pdir != "":
+        runTime = datetime.utcnow()
+        p3currFileEnd = runTime.strftime("%Y_%m_%d") + ".log"
+        for p3p in os.listdir(p3pdir):
+            if not p3p.endswith(p3currFileEnd):
+                p3pFiles.append(os.path.join(p3pdir, p3p))
 
     # Hash new files an read only new
     if os.path.isfile(os.path.join(workdir, "knownFilesHash.txt.gz")) == True:
@@ -113,11 +143,19 @@ def cronLog2perm(logdir, filebase, workdir, geolocv4, geolocv6):
     for f in zipFiles:
         fiHash = hashFileSHA256(f)
         knownFiles[fiHash] = 1
-        if fiHash in oldFiles:
-            print "Skiping known file: ", f
-        else:
+        if not fiHash in oldFiles:
             loadZip.append(f)
-            print "Loading new file: ", f
+   #         print "Loading new file: ", f
+   #     else:
+   #         print "Skiping known file: ", f
+    for f in p3pFiles:
+        fiHash = hashFileSHA256(f)
+        knownFiles[fiHash] = 1
+        if not fiHash in oldFiles:
+            loadP3P.append(f)
+            print "Loading new P3P file: ", f
+        else:
+            print "Skiping known P3P file: ", f
     # Save the list of hashes
     pfile = gzip.open(os.path.join(workdir, "knownFilesHash.txt.gz"), "w")
     for li in knownFiles:
@@ -132,6 +170,14 @@ def cronLog2perm(logdir, filebase, workdir, geolocv4, geolocv6):
               #  print rData["conv"]
                 logList.append(rData["conv"])
         logfile.close()
+    for f in loadP3P:
+        with open(f, "r") as logfile:
+            for l in logfile.readlines():
+                rData = convP3PFormat(l,geodbv4,geodbv6)
+                if rData["err"] == 0:
+                  #  print rData["conv"]
+                    logList.append(rData["conv"])
+
     return {"logList": logList}
 
 def add2permalog(ppath, logList):

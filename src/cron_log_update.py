@@ -15,7 +15,7 @@ def cronupdate():
         print "Run ./src/update_GeoLite2.py first!"
         return
     ret = "ALL REQUESTS:\n_____________\n"
-    pData = lf.cronLog2perm(setti.LOGDIR, setti.LOGBASE, PLOGPATH, GEODBDV4, GEODBDV6) 
+    pData = lf.cronLog2perm(setti.LOGDIR, setti.P3PLDIR, setti.LOGBASE, PLOGPATH, GEODBDV4, GEODBDV6) 
     lf.add2permalog(PLOGPATH, pData["logList"])
 
 

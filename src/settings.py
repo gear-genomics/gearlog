@@ -8,6 +8,9 @@ LOGDIR  = "/home/uni/embl/gearlog/bla_log"
 # LOGBASE = "mingear"
 LOGBASE = "access" # for Nginx server
 
+# Directory of Primer3Plus log files, "" for no P3P log files
+P3PLDIR = "/home/uni/embl/gearlog/p3p_log"
+
 # File endings to ignore
 IGNTYPE = [".jpg", ".png", ".svg", ".ico",
            ".css", ".js", ".json", ".txt",
@@ -41,6 +44,8 @@ TRACKLIST = [# ["","",""],
 ["Primer3Plus I","Get Page with UUID","/primer3plus/index.html?UUID=*"],
 ["Primer3Plus I","Load Default Settings","/primer3plus/api/v1/defaultsettings"],
 ["Primer3Plus I","Run Primer3","/primer3plus/api/v1/runprimer3"],
+["Primer3Plus I","Pick Success","/zduzcbjhebjhcjgczjegbcjhejg"],
+["Primer3Plus I","Pick Fail","/flktddtsuatudszuzewzuszezuz"],
 ["Primer3Plus I","Load Server Data","/primer3plus/api/v1/loadServerData"],
 ["Primer3Plus II","Get Compare Files","/primer3plus/primer3compareFiles.html"],
 ["Primer3Plus II","Get Manager","/primer3plus/primer3manager.html"],
