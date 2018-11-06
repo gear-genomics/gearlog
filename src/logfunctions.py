@@ -103,7 +103,7 @@ def cronLog2perm(logdir, p3pdir, filebase, workdir, geolocv4, geolocv6):
     geodbv4 = []
     geodbv6 = []
     with open(geolocv4, "r") as geofile: 
-        print "Load Geodata IPv4"
+#        print "Load Geodata IPv4"
         last = -1
         for lin in geofile.readlines():
             start,end,cid,cnam = lin.split(",")
@@ -113,7 +113,7 @@ def cronLog2perm(logdir, p3pdir, filebase, workdir, geolocv4, geolocv6):
             geodbv4.append([int(start),int(end),cid,cnam])
 
     with open(geolocv6, "r") as geofile:
-        print "Load Geodata IPv6"
+#        print "Load Geodata IPv6"
         last = -1
         for lin in geofile.readlines():
             start,end,cid,cnam = lin.split(",")
@@ -153,9 +153,9 @@ def cronLog2perm(logdir, p3pdir, filebase, workdir, geolocv4, geolocv6):
         knownFiles[fiHash] = 1
         if not fiHash in oldFiles:
             loadP3P.append(f)
-            print "Loading new P3P file: ", f
-        else:
-            print "Skiping known P3P file: ", f
+   #         print "Loading new P3P file: ", f
+   #     else:
+   #         print "Skiping known P3P file: ", f
     # Save the list of hashes
     pfile = gzip.open(os.path.join(workdir, "knownFilesHash.txt.gz"), "w")
     for li in knownFiles:

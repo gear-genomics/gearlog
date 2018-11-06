@@ -1,15 +1,12 @@
 #!/usr/bin/env python
-import os
 
 # Directory of the log files
-LOGDIR  = os.environ.get('GEARLOG_SERVER_LOG_PATH', '/var/log/nginx')
+# LOGDIR  = '/var/log/nginx'
+LOGDIR = "/home/uni/embl/gearlog/bla_log"
 
 # Base name of the log files
 # LOGBASE = "mingear"
 LOGBASE = "access" # for Nginx server
-
-# Directory of Primer3Plus log files, "" for no P3P log files
-P3PLDIR = os.environ.get('GEARLOG_P3P_LOG_PATH', '') 
 
 # File endings to ignore
 IGNTYPE = [".jpg", ".png", ".svg", ".ico",
@@ -32,6 +29,7 @@ TRACKLIST = [# ["","",""],
 ["Bistro","Get Page","/bistro"],
 ["Bgen","Get Page","/bgen"],
 ["Bgen","Download","/bgen/*"],
+["Gearlog","All Interactions","/gearlog*"],
 ["Indigo", "Main", "/indigo"],
 ["Indigo", "Upload", "/indigo/upload"],
 ["Indigo", "Upload", "/indigo/api/v1/upload"],

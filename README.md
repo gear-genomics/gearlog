@@ -19,15 +19,11 @@ Installing a local copy for testing
 Setup the scripts and cronjob
 -----------------------------
 
-Set the path to the log folders with environment variables:
+Set the path to the log folders in:
 
-Path to the server logs:
+`vim src/settings.py`
 
-`export GEARLOG_SERVER_LOG_PATH=/PATH_TO_NGINX_OR_APACHE_LOG`
-
-Path to the Primer3Plus logs (only if present):
-
-`export GEARLOG_P3P_LOG_PATH=/PATH_TO_PRIMER3PLUS_LOG`
+`vim src/cron_log_update.py`
 
 Install the Geolite2 database from MaxMind, available from http://www.maxmind.com:
 
@@ -43,9 +39,27 @@ Adapt the monitored pages in:
 
 `vim src/settings.py`
 
-Run the script after logrotate or as cronjob:
+Log in as root:
+
+`su`
+
+`cd src`
+
+Set the rights for the cronjob file:
+
+`./run_as_root.sh`
+
+Run the script first time (may take some time):
 
 `./src/cron_log_update.py`
+
+Open the crontab file:
+
+`vim /etc/crontab`
+
+Add script to run once each night as root:
+
+`21 3  * * *   root    PATH_TO_GEARLOG/src/cron_log_update.py > PATH_TO_GEARLOG/permalogs/cron_messages.txt 2>&1`
 
 
 Setup and run the server
