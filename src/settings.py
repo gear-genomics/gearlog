@@ -9,8 +9,7 @@ LOGBASE = "access" # for Nginx server
 
 # File endings to ignore
 IGNTYPE = [".jpg", ".png", ".svg", ".ico",
-           ".css", ".js", ".json", ".txt",
-           ".gz", ".pdf"]
+           ".css", ".js"]
 
 # Files to track
 # Provide primary key, secondary key and file with path

@@ -52,13 +52,15 @@ def generate():
 
     # Get the List of Primary Keys and Secondary Keys:
     lastPrimKey = ""
+    lastSecKey = ""
     secList.append("Date")
     k = 0; # 0 is the date
     for key in setti.TRACKLIST:
         if lastPrimKey != key[0]:
             lastPrimKey = key[0]
             keyList.append(key[0])
-        if primKey == key[0]:
+        if primKey == key[0] and lastSecKey != key[1]:
+            lastSecKey = key[1]
             k += 1
             secList.append(key[1])
             secDic['"' + key[1] + '"'] = k
