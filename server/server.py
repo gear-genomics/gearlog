@@ -44,8 +44,8 @@ def generate():
         dateEnd  = request.form['dateEnd']
     except KeyError:
         return jsonify(errors = [{"title": "Error: Required input keys missing to process the request."}]), 400
-    if datetime.now() < datetime.strptime(dateEnd, "%Y-%m-%d"):
-        dateEnd = datetime.now().strftime('%Y-%m-%d')
+    if datetime.now() - timedelta(hours=24)  < datetime.strptime(dateEnd, "%Y-%m-%d"):
+        dateEnd = (datetime.now() - timedelta(hours=24)).strftime('%Y-%m-%d')
     if datetime.strptime(dateEnd, "%Y-%m-%d") < datetime.strptime(dateStart, "%Y-%m-%d"):
         return jsonify(errors = [{"title": "Error: Start time later as end time."}]), 400
     spanDays = abs((datetime.strptime(dateEnd, "%Y-%m-%d") - datetime.strptime(dateStart, "%Y-%m-%d")).days)
@@ -93,7 +93,7 @@ def generate():
             for l in logfile.readlines():
                 linArr = l.split(',')
                 lTime = datetime.strptime(linArr[0], "%Y.%m.%d")
-                if linArr[2] == '"' + primKey + '"' and cptStart < lTime and cptEnd > lTime:
+                if linArr[2] == '"' + primKey + '"' and cptStart <= lTime and cptEnd >= lTime:
                     data.append(l)
             logfile.close()
 
@@ -105,7 +105,7 @@ def generate():
         resData.append([cptI.strftime('%Y.%m.%d'), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
         dateList[cptI.strftime('%Y.%m.%d')] = 1
         i = 1
-        while cptEnd >= cptStart and i < 120:
+        while cptI > cptStart and i < 120:
             i += 1
             cptI -= timedelta(hours=24)
             resData.append([cptI.strftime('%Y.%m.%d'), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])

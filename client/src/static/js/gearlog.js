@@ -16,6 +16,7 @@ var resHelp = -1;
 document.addEventListener("DOMContentLoaded", function() {
     var today = new Date();
     var last = new Date();
+    today.setDate(today.getDate()-1);
     last.setDate(today.getDate()-99);
     var endDate = document.getElementById('dateEnd');
     endDate.value = date2string(today);
@@ -55,7 +56,6 @@ function submit () {
 }
 
 function doSubmit (data) {
-    var loca = 'http://0.0.0.0:3300';
     var req = new XMLHttpRequest();
     req.addEventListener('load', displayResults);
     req.open('POST', `${API_URL}/upload`, true);

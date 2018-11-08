@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
 # Directory of the log files
-# LOGDIR  = '/var/log/nginx'
-LOGDIR = "/home/uni/embl/gearlog/bla_log"
+LOGDIR  = '/var/log/nginx'
 
 # Base name of the log files
 # LOGBASE = "mingear"
