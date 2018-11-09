@@ -13,6 +13,8 @@ LOGPATH = os.path.join(REPWS, "log_report")
 def extractLogs(args):
     count = 0
     count_200 = 0
+    re_fail = 0
+    re_succ = 0
     for f in os.listdir(setti.LOGDIR):
         if f.startswith(setti.LOGBASE):
             if f.endswith(".gz"):
@@ -23,19 +25,21 @@ def extractLogs(args):
             for l in logfile.readlines():
                 res = "Re FAIL"
                 da = re.search(lf.lineformat, l)
-                if da:
-                    res = "Re success"
-
-
                 if args['querry'] in l:
                     if args['date'] in l:
+                        if da:
+                            res = "Re success"
+                            re_succ += 1
+                        else:
+                            re_fail += 1
+                        
                         print l + res
                         count += 1
                         if da.group('statuscode') == '200':
                             count_200 += 1
 
             logfile.close()
-    print "\nFound " + str(count) + " lines (" +  str(count_200) + " with status code 200)!\n"
+    print "\nFound " + str(count) + " lines (" +  str(count_200) + " with status code 200)!\n Regula expression: No match " +  str(re_fail) + "\n"
 
 if __name__ == "__main__":
     pars = argparse.ArgumentParser(description='Querry the log files')
