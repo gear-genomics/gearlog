@@ -23,6 +23,8 @@ document.addEventListener("DOMContentLoaded", function() {
     var startDate = document.getElementById('dateStart');
     startDate.value = date2string(last);
 
+    document.getElementById('primKey').value = "Gear Main";
+    document.getElementById('btn-primKey').innerHTML = "Gear Main";
     var submitButton = document.getElementById('btn-submit');
     submitButton.addEventListener('click', submit);
     var selButton = document.getElementById('btn-key-list');
